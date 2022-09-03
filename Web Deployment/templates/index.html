@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Detect Depression</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='style.css') }}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous">
+        </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
+        </script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
+        </script>
+</head>
+<style>
+    .container-fluid {
+        justify-content: center;
+        margin-top: 10px;
+    }
+
+    table {
+        margin-top: 10px;
+        border: gray;
+    }
+
+    .username_label {
+        color: gray;
+    }
+
+    .op-per {
+        justify-content: center;
+    }
+
+    body {
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+
+    .urname {
+        display: block;
+    }
+
+    .panel {
+        border-radius: 10px;
+    }
+
+    .first-panel {
+        margin-top: 10px;
+    }
+
+    .username_button {
+        align-items: flex-start;
+    }
+
+    textarea::placeholder {
+        color: gray;
+    }
+
+    .username_button.hover {
+        background-color: gray;
+    }
+
+    .username__button {
+        background-color: white;
+    }
+
+    .text__button {
+        background-color: white;
+    }
+
+    .username__button.active {
+        background-color: blue;
+    }
+</style>
+
+<body background="{{ url_for('static',filename = 'round.png') }}">
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-sm-6 col-md-6 col-lg-6">
+                <div class="btn-group w-100 d-flex btn-group-justified " role="group">
+                    <button class="btn btn-outline-primary btn-lg username__button w-100 active">
+                        Username
+                    </button>
+                    <button class="btn btn-outline-primary btn-lg text__button w-100">
+                        Single Input
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center username__form">
+            <div class="col-sm-6 col-md-6 col-lg-6">
+                <form id="upload-form" action="{{ url_for('search_username') }}" method="POST"
+                    enctype="multipart/form-data">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <input type="text" name="username" class="form-control" placeholder="Enter username here">
+                            <input type="submit" name="submit" class="btn btn-success" value="Check" id="upload-buttom">
+                            </span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="row justify-content-center text__form">
+            <div class="col-sm-6 col-md-6 col-lg-6">
+                <form id="upload-form" action="{{ url_for('search_text') }}" method="POST"
+                    enctype="multipart/form-data">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <textarea name="normal_text" class="form-control" placeholder="Enter text here"></textarea>
+                            <input type="submit" name="submit" class="btn btn-success" value="Check" id="upload-buttom">
+                            </span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        {% if normal_text %}
+        <div class="row justify-content-center">
+            <div class="col-sm-8 col-md-8 col-lg-8">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">Text</h5>
+                        <p class="card-text"> {{ normal_text }}</p>
+                    </div>
+                    {% if '0' in normal_text_result %}
+                    <div class="card-footer text-white font-weight-bold" style="background-color: crimson;">
+                        Depressive
+                    </div>
+                    {% endif %}
+                    {% if '1' in normal_text_result %}
+                    <div class="card-footer text-white font-weight-bold" style="background-color:green;">
+                        Non-Depressive
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        <div class="row justify-content-center first-panel">
+            {% if user_exist %}
+            <div class="col-sm-8 col-md-8 col-lg-8">
+                <div class="panel panel-default bg-white">
+                    <div class="panel-body text-center">
+                        <h3 class="urname justify-content-center">{{ username}}</h3>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-sm-8 col-md-8 col-lg-8 table-responsive">
+                {% block content %}
+                {% if user_exist %}
+                <table class="table table-hover table-bordered table-striped table-hover bg-white ">
+                    <thead>
+                        <tr>
+                            <th>Sr.No.</th>
+                            <th>Tweet</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if tweet_details %}
+                        {% for tinfo in tweet_details %}
+                        <tr>
+                            <td>{{loop.index}}</td>
+                            {% for t in tinfo %}
+                            <td>{{t}}</td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% endif %}
+                {% endif %}
+                {% if user_exist == false %}
+                <h3 class=" row justify-content-center text-warning">
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        <strong>Wrong username</strong> Please Enter a correct username
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </h3>
+                {% endif %}
+
+                {% endblock content %}
+
+            </div>
+        </div>
+        {% if percentage %}
+        <div class="row justify-content-center">
+            <div class="col-sm-8 col-md-8 col-lg-8">
+                <div class="panel panel-default bg-white">
+                    {% if dep %}
+                    <div class="panel-body text-center" style="background-color: crimson;">
+                        <h4 class="op-per  justify-content-center text-white">
+                            Depressive : <span class="text-white">{{percentage }} %</span>
+                        </h4>
+                    </div>
+                    {% else %}
+                    <div class="panel-body text-center">
+                        <h4 class="op-per  justify-content-center text-white" style="background-color: green;">
+                            Depressive : <span class="text-white">{{percentage }} %</span>
+                        </h4>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</body>
+<script>
+    $("#file-picker").change(function () {
+
+        var input = document.getElementById('file-picker');
+
+        for (var i = 0; i < input.files.length; i++) {
+            //koala.jpg, koala.JPG substring(index) lastIndexOf('a') koala.1.jpg
+            var ext = input.files[i].name.substring(input.files[i].name.lastIndexOf('.') + 1).toLowerCase()
+
+            if ((ext == 'jpg') || (ext == 'png') || (ext == 'jpeg')) {
+                $("#msg").text("Files are supported")
+            } else {
+                $("#msg").text("Files are NOT supported")
+                document.getElementById("file-picker").value = "";
+            }
+
+        }
+
+
+    });
+
+    $('.text__form').hide();
+
+    $('.username__button').click(function (e) {
+        e.preventDefault();
+        $(this).addClass('active');
+        $('.text__button').removeClass('active');
+        $('.username_form').show();
+        $('.text__form').hide();
+    });
+
+    $('.text__button').click(function (e) {
+        e.preventDefault();
+        $(this).addClass('active');
+        $('.username__button').removeClass('active');
+        $('.text__form').show();
+        $('.username__form').hide();
+    });
+
+    $('.username__button').click(function (e) {
+        e.preventDefault();
+        $(this).addClass('active');
+        $('.text__button').removeClass('active');
+        $('.username__form').show();
+        $('.text__form').hide();
+    });
+</script>
+
+</html>

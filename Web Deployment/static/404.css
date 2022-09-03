@@ -1,0 +1,29 @@
+H1 {
+    text-align:center;
+    Letter-spacing: px;
+    padding: 100px;
+    font-size: 1000%;
+    font-weight: bold
+  }
+    
+  p  {
+    text-align:center;
+    font-size:100%;
+    position: relative;
+    
+  }
+  
+  html{
+     background-color: white;
+    background-size: cover;
+    background-position: center;
+    font-family: '', sans-serif;
+    Color: #fff
+  }
+  H2 {
+   font-family: 'Bookman Old Style';
+   font-size: 40px;
+    padding:20px;
+  }
+  
+  
